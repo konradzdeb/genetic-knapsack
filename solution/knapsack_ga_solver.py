@@ -20,7 +20,7 @@ class Knapsack:
     """    
     initial_solution: list[int] = field(default_factory=list)
     optimal_solution: list[int] = field(default_factory=list)
-    memory: list[list[int]] = field(default_factory=lambda: [[]])
+    population: list[list[int]] = field(default_factory=lambda: [[]])
     optimal_value: float = 0    # Optimal utility value
     optimal_weight: float = 0   # Optimal weight value
 
@@ -64,9 +64,7 @@ def generate_random_solution(items, capacity):
 random.seed(123)
 # Generate some data for tests, first is utility, second is weight
 items_w_weights = []
-for _ in range(100):
-    utility_weight_pair = [random.randint(1, 100), random.randint(1, 100)]
-    items_w_weights.append(utility_weight_pair)
+utility_weight_pair = [[random.randint(1, 100), random.randint(1, 100)] for _ in range(100)]
 # Assume some arbitrary capacity for the Knapsack
 CAPCITY: Final[int] = 30
 # Instantiate Knapsack class
