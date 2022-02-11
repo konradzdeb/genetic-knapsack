@@ -18,19 +18,10 @@ class Knapsack:
     """Knapsack Class
     Data class holding initial, optimal solution and memory of all solutions.
     """    
-    initial_solution: list[int] = field(default_factory=list)
     optimal_solution: list[int] = field(default_factory=list)
     population: list[list[int]] = field(default_factory=lambda: [[]])
     optimal_value: float = 0    # Optimal utility value
     optimal_weight: float = 0   # Optimal weight value
-
-    def initial_weight(self):
-        """Calculate initial weight from the initial solution"""
-        return sum([x[0] for x in self.initial_solution])
-
-    def initial_value(self):
-        """Calculate value for the initial solution"""
-        return sum([x[1] for x in self.initial_solution])
 
     def solution_weight(self, iteration):
         """Provide a weight information for a specific solution"""
@@ -63,7 +54,6 @@ def generate_random_solution(items, capacity):
 # Tests
 random.seed(123)
 # Generate some data for tests, first is utility, second is weight
-items_w_weights = []
 utility_weight_pair = [[random.randint(1, 100), random.randint(1, 100)] for _ in range(100)]
 # Assume some arbitrary capacity for the Knapsack
 CAPCITY: Final[int] = 30
