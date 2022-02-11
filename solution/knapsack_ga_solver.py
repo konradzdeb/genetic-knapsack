@@ -17,7 +17,7 @@ from typing import Final
 class Knapsack:
     """Knapsack Class
     Data class holding initial, optimal solution and memory of all solutions.
-    """    
+    """
     optimal_solution: list[int] = field(default_factory=list)
     population: list[list[int]] = field(default_factory=lambda: [[]])
     optimal_value: float = 0    # Optimal utility value
@@ -49,13 +49,25 @@ def generate_random_solution(items, capacity):
             current_weight += random_item[1]
     # Returned packed knapsack
     return random_solution
-        
-    
+
+
+def generate_population(items, solution_generator, population_size, capacity):
+    """Generate population using provided solution generator"""
+    population = []
+    while (len(population) < population_size):
+        population.append(solution_generator(items=items, capacity=capacity))
+    return population
+
+
 # Tests
 random.seed(123)
 # Generate some data for tests, first is utility, second is weight
-utility_weight_pair = [[random.randint(1, 100), random.randint(1, 100)] for _ in range(100)]
+items_w_weights = [
+    [random.randint(1, 100), random.randint(1, 100)] for _ in range(100)]
 # Assume some arbitrary capacity for the Knapsack
 CAPCITY: Final[int] = 30
+POPULATION_SIZE: Final[int] = 100
 # Instantiate Knapsack class
-genetic_knapsack = Knapsack(initial_solution=generate_random_solution(items_w_weights, 30))
+genetic_knapsack = Knapsack(population=generate_population(items=items_w_weights, population_size=POPULATION_SIZE,
+                                                           capacity=CAPCITY, solution_generator=generate_random_solution))
+genetic_knapsack
