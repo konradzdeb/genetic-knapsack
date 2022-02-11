@@ -10,6 +10,7 @@ Konrad Zdeb, 2021
 from dataclasses import dataclass, field
 import random
 from typing import Final
+import statistics
 
 
 # Classes
@@ -19,19 +20,27 @@ class Knapsack:
     Data class holding initial, optimal solution and memory of all solutions.
     """
     optimal_solution: list[int] = field(default_factory=list)
-    population: list[list[int]] = field(default_factory=lambda: [[]])
+    # Do not print population field when printing class
+    population: list[list[int]] = field(
+        default_factory=lambda: [[]], repr=False)
     optimal_value: float = 0    # Optimal utility value
     optimal_weight: float = 0   # Optimal weight value
 
     def solution_weight(self, iteration):
         """Provide a weight information for a specific solution"""
-        specific_solution = self.memory[iteration]
+        specific_solution = self.population[iteration]
         return sum([x[0] for x in specific_solution])
 
     def solution_value(self, iteration):
         """Provide a utility value of specific solution"""
-        specific_solution = self.memory[iteration]
+        specific_solution = self.population[iteration]
         return sum([x[1] for x in specific_solution])
+
+    def __repr__(self) -> str:
+        pop_size = len(self.population)
+        med_items = statistics.median(
+            [len(x) for x in self.population])
+        return "Genetic Knapsack: population size: {0:,}; average knapsack size: {1:.0f}.".format(pop_size, med_items)
 
 
 # Functions
@@ -66,8 +75,8 @@ items_w_weights = [
     [random.randint(1, 100), random.randint(1, 100)] for _ in range(100)]
 # Assume some arbitrary capacity for the Knapsack
 CAPCITY: Final[int] = 30
-POPULATION_SIZE: Final[int] = 100
+POPULATION_SIZE: Final[int] = 1000
 # Instantiate Knapsack class
 genetic_knapsack = Knapsack(population=generate_population(items=items_w_weights, population_size=POPULATION_SIZE,
                                                            capacity=CAPCITY, solution_generator=generate_random_solution))
-genetic_knapsack
+print(genetic_knapsack)
