@@ -8,6 +8,7 @@ Konrad Zdeb, 2021
 
 # Imports
 from dataclasses import dataclass, field
+from operator import le
 import random
 from typing import Final
 import statistics
@@ -36,6 +37,11 @@ class Knapsack:
         specific_solution = self.population[iteration]
         return sum([x[1] for x in specific_solution])
 
+    def solutions_rank(self):
+        """Provide a utility rank of all solutions"""
+        solution_values = [self.solution_value(x) for x in range(len(self.population))]
+        return sorted(range(len(solution_values)), key=solution_values.__getitem__)
+
     def __repr__(self) -> str:
         pop_size = len(self.population)
         med_items = statistics.median(
@@ -52,7 +58,7 @@ def generate_random_solution(items, capacity):
         # Select random item
         random_item = random.sample(items, 1)[0]
         # Check if item fits in the knapsack
-        if current_weight + random_item[1] <= capacity:
+        if current_weight + random_item[0] <= capacity:
             # Add item to solution
             random_solution.append(random_item)
             current_weight += random_item[1]
@@ -68,15 +74,55 @@ def generate_population(items, solution_generator, population_size, capacity):
     return population
 
 
+# TODO: Implement crossover
+def calculate_utility(solution):
+    """Calculate solution utility
+    This is equivalent to pulling solution value from the Knapsack class but is implemented separately for clarity.
+    Args:
+        solution ([[int, int]]): List of items in the solution
+
+    Returns:
+        int: Utility value as an integer
+    """
+    return sum([x[1] for x in solution])
+
+
+def selection(knapsack_object, fitness_rank=None):
+    """Select objects from Knapsack that are of defined fitness
+    
+    If fitness is provided, objects above the threshold are selected for situation
+    where fitness is not provided the top half of objects is selected. Fitness 
+    corresponds to minimum rank value.
+    Args:
+        knapsack_object (Knapsack): Object of a Knapsack class with provided population
+        fitness (int, optional): If provided minimum rank value to include. Defaults to None.
+
+    Returns:
+        [int]: Index of solutions from population that were selected
+    """
+    solutions_rank = knapsack_object.solutions_rank()
+    if fitness_rank is None:
+        threshold = statistics.median(knapsack_object.solutions_rank())
+    else:
+        threshold = fitness_rank
+    index_selected = [x for x in range(len(solutions_rank)) if solutions_rank[x] < threshold]
+    return index_selected
+
+
+
 # Tests
 random.seed(123)
 # Generate some data for tests, first is utility, second is weight
 items_w_weights = [
-    [random.randint(1, 100), random.randint(1, 100)] for _ in range(100)]
+    [random.randint(1, 100), random.randint(1000, 10000)] for _ in range(100)]
 # Assume some arbitrary capacity for the Knapsack
 CAPCITY: Final[int] = 30
 POPULATION_SIZE: Final[int] = 1000
 # Instantiate Knapsack class
 genetic_knapsack = Knapsack(population=generate_population(items=items_w_weights, population_size=POPULATION_SIZE,
                                                            capacity=CAPCITY, solution_generator=generate_random_solution))
-print(genetic_knapsack)
+desired_fitness = 10
+res_selection = selection(genetic_knapsack, fitness_rank=desired_fitness)
+res_selection
+
+# TODO: Implement gentic algorithm functions

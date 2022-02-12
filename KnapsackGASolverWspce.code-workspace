@@ -5,6 +5,10 @@
 		}
 	],
 	"settings": {
-		"gitlens.currentLine.enabled": false
+		"gitlens.currentLine.enabled": false,
+		"wordcounter.enabled": false,
+		"cSpell.words": [
+			"wordcounter"
+		]
 	}
 }
