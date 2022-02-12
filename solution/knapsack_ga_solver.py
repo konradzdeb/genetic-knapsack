@@ -21,6 +21,7 @@ class Knapsack:
     Data class holding initial, optimal solution and memory of all solutions.
     """
     optimal_solution: list[int] = field(default_factory=list)
+    mutated_items_index: list[int] = field(default_factory=list)
     # Do not print population field when printing class
     population: list[list[int]] = field(
         default_factory=lambda: [[]], repr=False)
@@ -108,6 +109,40 @@ def selection(knapsack_object, fitness_rank=None):
     index_selected = [x for x in range(len(solutions_rank)) if solutions_rank[x] < threshold]
     return index_selected
 
+
+def mutation(knapsack_solution, items, pop_item=None):
+    """Mutate object from knapsack
+
+    Select object from Knapsack population and mutate.
+    
+    Args:
+        knapsack_object (Knapsack): Object of a Knapsack
+    """
+    # Select object from population
+    if pop_item is None:
+        pop_solution = random.sample(knapsack_solution.population, 1)[0]
+    else:
+        # TODO: Check if this needs unnesting
+        pop_solution = knapsack_solution.population[pop_item]
+    # Randomly mutate an object by replacing one item with the item from the
+    # available items. The mutation can produce adverse effect (utility decreases)
+    # or beneficial effect (utility increases). Try limited number of items and
+    # if continuous failing return the same thing.
+    # Obtain a list of remaining items to choose from
+    remaining_items = [x for x in items if x not in pop_solution]
+    # Get population weight
+    pop_weight = knapsack_solution.solution_weight(pop_item)
+    for _ in range(10):
+        # Select random item from available items
+        random_new_item = random.sample(remaining_items, 1)[0]
+        random_sol_item = random.sample(pop_solution, 1)[0]
+        # Check if replacing item in knapsack is acceptable
+        if pop_weight + random_new_item[0] - random_sol_item[0] <= knapsack_solution.capacity:
+            # Replace item in solution
+            pop_solution.remove(random_sol_item)
+            pop_solution.append(random_new_item)
+    # Return mutated solution
+    return pop_solution
 
 
 # Tests
