@@ -26,34 +26,34 @@ class TestGeneratingRandomSolution(unittest.TestCase):
 class TestGeneratingPopulation(TestGeneratingRandomSolution):
 
     def setUp(self):
+        # Generate population
+        self.population = generate_population(items=self.items_weight_value, capacity=self.CAPACITY,
+                                         population_size=10, solution_generator=generate_random_solution)
         return super().setUp()
 
     def test_function_output(self):
         """Test if the function returns a list of solutions"""
-        # Generate population
-        population = generate_population(items=self.items_weight_value, capacity=self.CAPACITY,
-                                         population_size=10, solution_generator=generate_random_solution)
         # Check if the population is a list
-        self.assertIsInstance(population, list)
+        self.assertIsInstance(solution.population, list)
         # Check if the population is not empty
-        self.assertEqual(len(population), 10)
+        self.assertEqual(len(solution.population), 10)
         # Check if the population is a list of lists
-        for solution in population:
+        for solution in solution.population:
             self.assertIsInstance(solution, list)
         # Check if the population is a list of lists
-        for solution in population:
+        for solution in solution.population:
             self.assertTrue(len(solution) > 0)
         # Check if the population is a list of lists
-        for solution in population:
+        for solution in solution.population:
             self.assertIsInstance(solution, list)
         # Check if the population is a list of lists
-        for solution in population:
+        for solution in solution.population:
             self.assertTrue(len(solution) > 0)
         # Check if the population is a list of lists
-        for solution in population:
+        for solution in solution.population:
             self.assertIsInstance(solution, list)
         # Check if the population is a list of lists
-        for solution in population:
+        for solution in solution.population:
             self.assertTrue(len(solution) > 0)
 
 
