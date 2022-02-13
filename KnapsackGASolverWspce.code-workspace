@@ -8,6 +8,7 @@
 		"gitlens.currentLine.enabled": false,
 		"wordcounter.enabled": false,
 		"cSpell.words": [
+			"unnesting",
 			"wordcounter"
 		]
 	}
